@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+# act like an alias.
+exec ps --forest -o pid,state,stime,user,command "$@"

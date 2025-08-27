@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+
+FREQ="$1"
+COUNT="$2"
+
+CPU=($(cat /proc/stat | sed -n 1p | tr -s " " | cut -d" " -f2,3,4,5))
+UCPU=$(( ${CPU[0]} + ${CPU[1]} + ${CPU[2]} ))
+TCPU=$(( $UCPU + ${CPU[3]} ))
+
+sleep $FREQ
+
+SPACES="    "
+
+if [[ $COUNT == "" ]] ; then
+    COUNT=-1
+fi
+
+while (( $COUNT != 0 )); do
+
+    ((--COUNT))
+
+    CPU=($(cat /proc/stat | sed -n 1p | tr -s " " | cut -d" " -f2,3,4,5))
+    MEM=($(sed -n -e 1p -e 3p /proc/meminfo | tr -s " " | cut -d" " -f2))
+    #TIME=$(date +"$TIME_FORMAT")
+
+    P_UCPU=$UCPU
+    P_TCPU=$TCPU
+
+    UCPU=$(( ${CPU[0]} + ${CPU[1]} + ${CPU[2]} ))
+    TCPU=$(( $UCPU + ${CPU[3]} ))
+    PCPU=$(( 100 * ($UCPU - $P_UCPU) / ($TCPU - $P_TCPU ) )) #TODO: delta
+
+    PMEM=$(( 100 * ${MEM[1]} / ${MEM[0]}  ))
+
+    PAD_CPU=${SPACES:0:$((3 - ${#PCPU}))}
+    PAD_MEM=${SPACES:0:$((3 - ${#PMEM}))}
+
+    # $TIME
+    echo "CPU: $PAD_CPU$PCPU% RAM: $PAD_MEM$PMEM%"
+    
+    sleep $FREQ
+done

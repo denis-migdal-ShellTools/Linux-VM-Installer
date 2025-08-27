@@ -1,1 +1,3 @@
+#!/usr/bin/bash
+
 lsblk -Me7 --tree=PATH -o PATH,LABEL,SIZE,FSUSE%,TYPE,PARTTYPENAME,FSTYPE,MOUNTPOINT "$@"

@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+TIME_FORMAT="[%F %T]"
+
+TIME="*** Process ended ***\nExecution time: %E (%P)\tMax allocated RAM: %MkB (%R)" time "$@" 2>&1 | ts "$TIME_FORMAT"
