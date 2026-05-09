@@ -2,4 +2,11 @@
 
 TIME_FORMAT="[%F %T]"
 
-TIME="*** Process ended ***\nExecution time: %E (%P)\tMax allocated RAM: %MkB (%R)" time "$@" 2>&1 | ts "$TIME_FORMAT"
+# %E : total ellapsed time (formatted, %e for in seconds)
+# %P : % of the time the process was running
+# %M : max RAM consumption
+
+# %R : minor page faults
+# %F : major page faults
+
+TIME="Process ended in %E (ran %P of the time) with %MkB max RAM." time "$@" 2>&1 | ts "$TIME_FORMAT"
