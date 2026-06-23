@@ -1,151 +1,71 @@
 # Linux VM Installer
 
-https://www.virtualbox.org/wiki/Download_Old_Builds_7_0
-https://download.virtualbox.org/virtualbox/
+`scripts/vm/build.sh $TEMPLATE_NAME` builds a new VM from a template.
 
-## Usage
+## Template
 
-- ...
+Templates are described by a `vm-templates/$TEMPLATE_NAME` directory:
+- `config.env` set global options (defaults are defined in `scripts/core/config.env`).
+- .
 
-## TODO
+## Recipes
 
-- use archivemount to patch iso file inplace (copy if dst given ?)
-- test avec time
+- `cmd $CMD $ARGS...` runs the command on the VM.
+- `upload $FILE $DEST` upload a file into the VM.
 
-### ASL
+TODO:
+- screenrc
+- tldr
+- htop/btop
+- sudo
+- ssh
 
+## Steps
+
+Internally `build` uses:
+1. `scripts/vm/create.sh $TEMPLATE_NAME`
+1. `scripts/vm/preseed.sh`
+1. `scripts/vm/install-os.sh $TEMPLATE_NAME`
+1. `scripts/vm/configure.sh $TEMPLATE_NAME`
+
+### `install-os`
+
+Note: `install-os` will not work on an already installed VM.
+
+Note : Alt+F4 to visualize logs during installation (Alt+F1 to go back).
+
+`install-os` uses:
+- `postinstall.sh` to preconfigure the VM (enables SSH root login for the `configure` step).
+
+At the end of this step, a `base-install` snapshot is created, enabling to reconfigure a VM without recreating it.
+
+### `configure`
+
+(Re-)configure the VM starting from the `base-install` snapshot. At the end of this step, a `fresh-install` snapshot is created.
+
+## iso
+
+We provide scripts to personalize ISO files. We do not recommend using it as recreating the ISO file and reinstalling the VM takes time.
+
+1. `scripts/iso/mount $ISO_FILE $ISO_DIR`: 
+1. modify files in `$ISO_DIR`.
+1. `scripts/iso/save $ISO_DIR $ISO_FILE`: write changes into a new ISO file.
+1. `scripts/iso/umount $ISO_DIR`
+
+## OLD
+
+Proxy install :
 
 ```bash
-OS_VERSION="12.11.0"
-VM_ISO_ORIG=/var/tmp/debian.iso
-
-wget -O "$VM_ISO_ORIG" https://cdimage.debian.org/mirror/cdimage/archive/$OS_VERSION/amd64/iso-dvd/debian-$OS_VERSION-amd64-DVD-1.iso
-
-export VM_DEBUG=true
-export VM_ISO=/var/tmp/debian-patched.iso
-
-# create & install VM
-./asl_patchiso.sh "$VM_ISO_ORIG" "$VM_ISO"
-./asl_create.sh
+echo 'http_proxy="$http_proxy"' >> /target/etc/environment
+echo 'https_proxy="$https_proxy"' >> /target/etc/environment
 ```
-
-### Test
-
-```bash
-export VM_DEBUG=true
-export VM_ISO_ORIG=/tmp/debian.iso
-export VM_ISO=/tmp/debian-patched.iso
-
-OS_VERSION="12.11.0"
-
-wget -O "$VM_ISO_ORIG" https://cdimage.debian.org/mirror/cdimage/archive/$OS_VERSION/amd64/iso-dvd/debian-$OS_VERSION-amd64-DVD-1.iso
-
-./scripts/postinstall.sh | ./scripts/patch_iso.sh "$VM_ISO_ORIG" "$VM_ISO"
-
-# create & install VM
-./scripts/vm_create.sh TEST ~/Data/TEST
-./scripts/preseed.sh | ./scripts/vm_install.sh TEST -
-
-# SSH
-./scripts/install_ssh.sh TEST
-
-# launcher
-./scripts/launcher.sh TEST
-./scripts/install_desktop.sh TEST
-
-# import/export
-./scripts/vm_export.sh TEST ~/Data/TESTC.ova
-./scripts/vm_import.sh ~/Data/TESTC.ova TESTC
-```
-
-## Scripts
-
-- vm_create : créée la VM
-- patch_iso : ajoute le script de post installation à l'iso.
-- preseed : crée le fichier de configuration de l'installation.
-- vm_install : install Linux sur la VM
-- install_ssh
-- vm_export
-- vm_import
-- launcher : démarre la VM dans un terminal
-- install_desktop : créée un fichier .desktop
-
-### vm_create
-
-Créée une nouvelle machine virtuelle :
-```bash
-./scripts/vm_create.sh $VM_NAME $VM_DIR
-```
-
-Variables d'environnement:
-
-|Nom|Valeur par défaut|Description|
-|--|--|--|
-|VM_RAM|4096||
-|VM_DISK|8192||
-|VM_NB_CPU|4||
-|VM_SSH_PORT|8022||
-
-### patch_iso
-
-Ajoute le script de post installation à l'iso :
-```bash
-$CMD | ./scripts/patch_iso.sh $SRC_ISO $DST_ISO 
-```
-
-### preseed
-
-Génère la configuraton preseed :
-```bash
-./scripts/preseed.sh > $PRESEED_FILE
-```
-
-Variables d'environnement:
-
-|Nom|Valeur par défaut|Description|
-|--|--|--|
-|VM_USER|Zeus||
-|VM_LOGIN|zeus||
-|VM_PWD|1234||
-|VM_HOSTNAME|LVMI||
-|VM_DOMAIN|$VM_HOSTNAME.localhost||
-|VM_LOCALE|fr_FR||
-|VM_KEYBOARD|fr||
-|VM_TZ|Europe/Paris||
-|VM_MIRROR|mirror.dsi.uca.fr||
-|VM_MIRROR_DIR|/debian/debian/||
-|VM_PROXY|$http_proxy||
-|VM_EXTRA_PACKAGES|openssh-server||
-
-
-Exemple de configuration ici : https://www.debian.org/releases/stable/example-preseed.txt
-
-### vm_install
-
-Installe une nouvelle machine virtuelle :
-```bash
-./scripts/vm_install.sh $VM_NAME $PRESEED_FILE
-# or
-./scripts/preseed.sh | ./scripts/vm_install.sh $VM_NAME -
-```
-
-Variables d'environnement:
-
-|Nom|Valeur par défaut|Description|
-|--|--|--|
-|VM_DEBUG|false|si true, permet de visualiser les logs pendant l'installation.|
-|VM_ISO||si non fourni, télécharge l'iso.|
-|VM_LOGIN|zeus|required for addon installation|
-|VM_POSTINSTALL|||
-
-Note : Alt+F4 pour visualiser les logs pendant l'installation (Alt+F1 pour revenir à l'interface graphique).
 
 ### ssh_install
 
 ```bash
 ./scripts/ssh_install.sh $VM_NAME
 ```
-
 
 ### vm_import/export
 

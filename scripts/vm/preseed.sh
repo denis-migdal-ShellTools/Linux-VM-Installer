@@ -1,33 +1,14 @@
 #!/usr/bin/bash
 
-DECL () {
-  if [ ! -v $1 ] ; then
-    declare -g $1="$2"
-  fi
-}
-
-DECL VM_USER  "Zeus"
-DECL VM_LOGIN "zeus"
-DECL VM_PWD   "1234"
-#
-DECL VM_HOSTNAME "LVMI"
-DECL VM_DOMAIN   "$VM_HOSTNAME.localhost"
-#
-DECL VM_LOCALE   "fr_FR"
-DECL VM_KEYBOARD "fr"
-DECL VM_TZ       "Europe/Paris"
-#
-DECL VM_MIRROR     "mirror.dsi.uca.fr"
-DECL VM_MIRROR_DIR "/debian/debian/"
-DECL VM_PROXY      "$http_proxy"
-#
-DECL VM_EXTRA_PACKAGES "openssh-server"
+source $(dirname $(readlink -f "$0"))/../core/base.sh
 
 # Generate file
 
-d-i() { echo d_i $@ ; }
-keyboard-configuration() { echo keyboard-configuration $@ ; }
-taskel() { echo taskel $@ ; }
+: > "$PRESEED_FILE"
+
+d-i() { echo d_i $@ >> "$PRESEED_FILE"; }
+keyboard-configuration() { echo keyboard-configuration $@ >> "$PRESEED_FILE"; }
+taskel() { echo taskel $@ >> "$PRESEED_FILE"; }
 
 # Locale
 d-i debian-installer/locale string "$VM_LOCALE"
@@ -70,22 +51,24 @@ d-i netcfg/link_wait_timeout string 10
 # Clock
 
 #IF not VBOX ?
-cat <<- EOF
-@@VBOX_COND_IS_RTC_USING_UTC@@
-d-i clock-setup/utc-auto boolean true
-d-i clock-setup/utc boolean true
-@@VBOX_COND_END@@
-@@VBOX_COND_IS_NOT_RTC_USING_UTC@@
-d-i clock-setup/utc-auto boolean false
-d-i clock-setup/utc boolean false
-@@VBOX_COND_END@@
-EOF
+cat <<- EOF >> "$PRESEED_FILE"
+	@@VBOX_COND_IS_RTC_USING_UTC@@
+	d-i clock-setup/utc-auto boolean true
+	d-i clock-setup/utc boolean true
+	@@VBOX_COND_END@@
+	@@VBOX_COND_IS_NOT_RTC_USING_UTC@@
+	d-i clock-setup/utc-auto boolean false
+	d-i clock-setup/utc boolean false
+	@@VBOX_COND_END@@
+	EOF
 
 d-i time/zone string "$VM_TZ"
 
 #IF VBOX
-echo "@@VBOX_COND_IS_INSTALLING_ADDITIONS@@d-i clock-setup/ntp boolean false@@VBOX_COND_END@@"
-echo "@@VBOX_COND_IS_NOT_INSTALLING_ADDITIONS@@d-i clock-setup/ntp boolean true@@VBOX_COND_END@@"
+cat <<- EOF >> "$PRESEED_FILE"
+	@@VBOX_COND_IS_INSTALLING_ADDITIONS@@d-i clock-setup/ntp boolean false@@VBOX_COND_END@@
+	@@VBOX_COND_IS_NOT_INSTALLING_ADDITIONS@@d-i clock-setup/ntp boolean true@@VBOX_COND_END@@
+	EOF
 
 # Packages, Mirrors, Image
 d-i base-installer/kernel/override-image string linux-server
