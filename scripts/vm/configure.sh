@@ -23,7 +23,7 @@ ssh -M -S "$CONTROL_PATH" -fN -p $VM_SSH_PORT -i "$WORKSPACE_DIR/keys/key" -o St
 
 # error...
 cmd() {
-    ssh -S "$CONTROL_PATH" -p $VM_SSH_PORT root@localhost "$@"
+    ssh -S "$CONTROL_PATH" -p $VM_SSH_PORT root@localhost "$1"
 }
 
 upload () {

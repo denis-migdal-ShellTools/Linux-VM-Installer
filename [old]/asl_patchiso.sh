@@ -1,5 +1,4 @@
 export VM_ASSETS="screenrc bin lsd.yaml keys/LVMI.pub VMReady.service"
-#default VM_EXTRA_PACKAGES ""
 
 # sudo
 # screen
