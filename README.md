@@ -30,7 +30,7 @@ Internally `build` uses:
 
 ### `install-os`
 
-Note: `install-os` will not work on an already installed VM.
+Note: `install-os` will not work on an already installed VM, you'll need to recreate it.
 
 Note : Alt+F4 to visualize logs during installation (Alt+F1 to go back).
 
