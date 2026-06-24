@@ -24,7 +24,7 @@ TODO:
 
 Internally `build` uses:
 1. `scripts/vm/create.sh $TEMPLATE_NAME`
-1. `scripts/vm/preseed.sh`
+1. `scripts/vm/preseed.sh $TEMPLATE_NAME`
 1. `scripts/vm/install-os.sh $TEMPLATE_NAME`
 1. `scripts/vm/configure.sh $TEMPLATE_NAME`
 
