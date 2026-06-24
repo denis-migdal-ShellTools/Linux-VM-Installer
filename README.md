@@ -10,7 +10,7 @@ Templates are described by a `vm-templates/$TEMPLATE_NAME` directory:
 
 ## Recipes
 
-- `cmd $CMD $ARGS...` runs the command on the VM.
+- `cmd "$CMDLINE"` runs the command on the VM.
 - `upload $FILE $DEST` upload a file into the VM.
 
 TODO:
