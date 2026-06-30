@@ -1,6 +1,5 @@
-export VM_ASSETS="screenrc bin lsd.yaml keys/LVMI.pub VMReady.service"
+export VM_ASSETS="screenrc"
 
-# sudo
 # screen
 # btop
 
@@ -8,18 +7,6 @@ cat << EOF >> "$ISODIR/install/postinstall.sh"
 
 # screenrc
 cp /cdrom/install/screenrc -t /target/etc/
-
-# cmd
-
-chroot /target /bin/bash -c '
-# fix env variables
-export HOME=/root
-export PATH="\$PATH:/usr/local/bin"
-
-set -x
-
-# sudo
-usermod zeus -G sudo -a
 
 # tldr
 pipx install pipx
