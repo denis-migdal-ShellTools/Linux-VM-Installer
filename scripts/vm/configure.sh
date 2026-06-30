@@ -16,12 +16,11 @@ fi
 
 CONTROL_PATH=~/.ssh/cm-root@localhost:8022
 
-ssh -M -S "$CONTROL_PATH" -fN -p $VM_SSH_PORT -i "$WORKSPACE_DIR/keys/key" -o StrictHostKeyChecking=accept-new root@localhost
+ssh -M -S "$CONTROL_PATH" -fN -p $VM_SSH_PORT -i "$WORKSPACE_DIR/keys/automation" -o StrictHostKeyChecking=accept-new root@localhost
 
 # ssh -S ~/.ssh/cm-%r@%h:%p user@host
 # scp -o ControlPath=~/.ssh/cm-%r@%h:%p fichier user@host:/tmp
 
-# error...
 cmd() {
     ssh -S "$CONTROL_PATH" -p $VM_SSH_PORT root@localhost "$1"
 }

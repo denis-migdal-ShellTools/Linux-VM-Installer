@@ -1,0 +1,4 @@
+#!/usr/bin/env -S python3
+import sys
+
+print("args:", sys.argv)

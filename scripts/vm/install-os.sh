@@ -12,14 +12,18 @@ fi
 
 POST_INSTALL=$(cat "$POSTINSTALL_FILE" | sed "s/'/'\\\\''/g")
 
-echo "$ISO_FILE"
-echo "$PRESEED_FILE"
+KEY=$(cat "$WORKSPACE_DIR/keys/automation.pub")
+
+# Without debug:
+# "/target/bin/bash -c '$POST_INSTALL' _ '$KEY'"
+# With debug:
+# "echo '$POST_INSTALL' > /target/postinstall && /target/bin/bash /target/postinstall '$KEY'"
 
 VBoxManage unattended install "$VM_NAME" \
     --iso "$ISO_FILE" \
     --install-additions \
     --script-template="$PRESEED_FILE" \
-    --post-install-command="/target/bin/bash -c '$POST_INSTALL'" \
+    --post-install-command="echo '$POST_INSTALL' > /target/postinstall && /target/bin/bash /target/postinstall '$KEY'" \
     --extra-install-kernel-parameters="$EXTRA_KERNEL_PARAMETERS" \
     --user "$VM_LOGIN"
 

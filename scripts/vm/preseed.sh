@@ -103,9 +103,9 @@ d-i pkgsel/include string $VM_EXTRA_PACKAGES
 d-i pkgsel/upgrade select none
 
 # Users
-d-i passwd/root-login boolean true
-d-i passwd/root-password password "$VM_PWD"
-d-i passwd/root-password-again password "$VM_PWD"
+d-i passwd/root-login boolean false
+#d-i passwd/root-password password "$VM_PWD"
+#d-i passwd/root-password-again password "$VM_PWD"
 d-i passwd/user-fullname string "$VM_USER"
 d-i passwd/username string "$VM_LOGIN"
 d-i passwd/user-password password "$VM_PWD"

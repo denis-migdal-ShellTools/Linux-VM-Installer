@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+for i in {30..37} {90..97}; do
+    printf "\e[${i}m%3s\e[0m " "$i"
+done
+echo
+
+for i in {40..47} {100..107}; do
+    printf "\e[${i}m%3s\e[0m " "$i"
+done
+echo
