@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+
+rm -rf ~zeus/TP/TP0
+
+mkdir -p ~zeus/TP/TP0/Alain \
+         ~zeus/TP/TP0/Paul \
+         ~zeus/TP/TP0/Lou \
+         ~zeus/TP/TP0/sav/old
+
+echo "Nah, I'm good." > ~zeus/TP/TP0/Alain/work.txt
+echo "1. faire la liste de mes TODO." > ~zeus/TP/TP0/Paul/todo.txt
+echo "02/11 : finir le TP." > ~zeus/TP/TP0/Lou/planning.txt
+
+echo "share/ contient vos dossiers partagés" > ~zeus/TP/TP0/Lou/README.txt
+
+cp ~zeus/TP/TP0/Lou/README.txt ~zeus/TP/TP0/Paul/README.md
+
+echo "Échec de la sauvegarde" > ~zeus/TP/TP0/sav/old/logs.txt
+
+lsd --tree ~zeus/TP/TP0

@@ -1,6 +1,11 @@
 # Linux VM Installer
 
-`scripts/vm/build.sh $TEMPLATE_NAME` builds a new VM from a template.
+## In short
+
+- `scripts/vm/build.sh $TEMPLATE_NAME` builds a new VM from a 
+- `scripts/vm/configure.sh ASL` reconfigure a VM
+- `ssh -p 8022 zeus@localhost -i ~/.ssh/keys/ASLTerm`
+
 
 ## Template
 

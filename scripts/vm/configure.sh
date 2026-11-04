@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+# TODO: execute-recipe (cmd)...
+
 source $(dirname $(readlink -f "$0"))/../core/base.sh
 
 VBoxManage controlvm "$VM_NAME" poweroff || true
