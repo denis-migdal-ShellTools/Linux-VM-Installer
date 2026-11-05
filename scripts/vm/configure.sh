@@ -28,12 +28,19 @@ cmd() {
 }
 
 upload () {
-    scp -o ControlPath="$CONTROL_PATH" -P $VM_SSH_PORT "$ROOT/$1" root@localhost:"$2"
+
+    PATH=$1
+    if ! [[ $var == /* ]]; then
+        PATH="$ROOT/$1"
+    fi
+
+    scp -o ControlPath="$CONTROL_PATH" -P $VM_SSH_PORT "$PATH" root@localhost:"$2"
 }
 
 export VM_LOGIN
 export VM_SSH_PORT
 export CONTROL_PATH
+export CACHE_DIR
 export -f cmd
 export -f upload
 
