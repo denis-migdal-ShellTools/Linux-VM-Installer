@@ -2,13 +2,17 @@
 
 # requires aliases recipe.
 
+FILE="$CACHE_DIR/lsd.deb"
 URL="https://github.com/lsd-rs/lsd/releases/download/v1.2.0/lsd-musl_1.2.0_amd64.deb"
+
+if ! [[ -f "$FILE" ]] ; then
+    wget -q "$URL" -O "$FILE"
+fi
 
 set -x
 
-DEB=$(mktemp)
-wget "$URL" -O
-dpgk -i "$DEB"
+upload "$FILE" "/tmp/lsd.deb"
+cmd 'dpkg -i "/tmp/lsd.deb"'
 
 # cmd "apt install lsd"
 cmd "mkdir -p /etc/lsd"
